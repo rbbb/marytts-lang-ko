@@ -12,6 +12,6 @@ Supports the following:
 
 License: 
 
-licensed under LGPL v3.0 with Seunghee loves robots clause. Released on her birthday.
+licensed under LGPL v3.0 with Seunghee loves robots clause, if you use this module on a robot, please send a video with the robot saying a few phrases. Released on her birthday.
 
 The hanja dictionary has been extracted from wikipedia/wiktionary and comes with its own license (same as wikipedia/wiktionary, currently CC-BY-SA, or whatever it becomes).
