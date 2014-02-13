@@ -301,7 +301,7 @@ public class KoreanGraphemeToPhoneme {
 			{
 			case NGType:
 			case KType: result.phoneme="N"; result.consonant='ㄴ'; return result;
-			case TType: result.phoneme="n"; result.consonant='ㄴ'; return result; //TODO: check
+			case TType: result.phoneme="n"; result.consonant='ㄴ'; return result;
 			case NType:
 			case LType:
 				if(startConsonant=='ㄴ' && remainingConsonantType==RemainingConsonantType.NType)

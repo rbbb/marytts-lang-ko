@@ -32,7 +32,7 @@ public class KoreanConfigTest {
 	
 	
 	@Test
-	public void hasFrenchLocale() throws MaryConfigurationException {
+	public void hasKoreanLocale() throws MaryConfigurationException {
 		LanguageConfig e = new KoreanConfig();
 		assertTrue(e.getLocales().contains(new Locale("ko")));
 	}

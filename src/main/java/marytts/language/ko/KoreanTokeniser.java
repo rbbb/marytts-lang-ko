@@ -39,15 +39,25 @@ public class KoreanTokeniser extends InternalModule
     public KoreanTokeniser() {
     	//declares input as RAWMARYXML and output as TOKENS for locale ko
     	super("KoreanTokeniser", MaryDataType.RAWMARYXML, MaryDataType.TOKENS, new Locale("ko"));
+    	internalTokeniser = new JTokeniser(MaryDataType.RAWMARYXML,
+                MaryDataType.TOKENS,
+                Locale.ENGLISH);	
     }
-
+    
+    JTokeniser internalTokeniser;
+    boolean internalTokeniserIsStarted = false;
     public MaryData process(MaryData d)
     throws Exception
     {
-    	JTokeniser internalTokeniser = new JTokeniser(MaryDataType.RAWMARYXML,
-                MaryDataType.TOKENS,
-                Locale.ENGLISH);
-    	internalTokeniser.startup();
+    	if(!internalTokeniserIsStarted){
+    		synchronized (internalTokeniser) {
+				if(!internalTokeniserIsStarted){
+					internalTokeniser.startup();
+					internalTokeniserIsStarted = true;
+				}
+			}
+    	}
+    	
     
     	//Korean has Korean script (Hangul), numbers and english letters
         //grouped into one token, we separate them before passing the

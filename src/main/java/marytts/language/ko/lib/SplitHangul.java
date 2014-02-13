@@ -165,13 +165,13 @@ public class SplitHangul {
 		RIEULHIEUH('\u11B6','\u3140'),
 		MIEUM('\u11B7','\u3141'),
 		PIEUP('\u11B8','\u3142'),
-		//no BB
+		//no SSANGPIEUP
 		PIEUPSIOS('\u11B9','\u3144'),
 		SIOS('\u11BA','\u3145'),
 		SSANGSIOS('\u11BB','\u3146'),
 		IEUNG('\u11BC','\u3147'),
 		CIEUC('\u11BD','\u3148'),
-		//no JJ
+		//no SSANGCIEUC
 		CHIEUCH('\u11BE','\u314A'),
 		KHIEUKH('\u11BF','\u314B'),
 		THIEUTH('\u11C0','\u314C'),

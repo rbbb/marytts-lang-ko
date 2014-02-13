@@ -87,7 +87,10 @@ public abstract class ExpansionPattern {
         date = new DateEP();
         time = new TimeEP();
         currency = new CurrencyEP();
-        duration = new DurationEP();
+        //not sure how to handle durations for asian languages
+        //counter words will already ensure that 2시간/3일동안 is expanded properly
+        //not sure this is respects the mary TTS module requirements
+//      duration = new DurationEP();
 //      measure = new MeasureEP();
         telephone = new TelephoneEP();
 //		abbrev = new AbbrevEP();
@@ -99,7 +102,7 @@ public abstract class ExpansionPattern {
         //duration is after time, so will never be triggered
         //except through <say-as> expansion request tags
         for(ExpansionPattern ep:new ExpansionPattern[]
-        		{/*multiword, */net, /*composite, */date, time, duration, currency, /*measure,*/ telephone, /*abbrev, */number, specialChar})
+        		{/*multiword, */net, /*composite, */date, time, /*duration,*/ currency, /*measure,*/ telephone, /*abbrev, */number, specialChar})
         {
         	expansionPatterns.add(ep);
         	for(String pattern:ep.knownTypes())
@@ -496,5 +499,15 @@ public abstract class ExpansionPattern {
         prosody.setAttribute("rate", "-20%");
         phonol.getParentNode().insertBefore(prosody, phonol);
         prosody.appendChild(phonol);
+    }
+    
+    public static String listToString(List<String> list)
+    {
+    	String res = "";
+    	for(String s:list)
+    	{
+    		res+=s;
+    	}
+    	return res;
     }
 }

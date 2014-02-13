@@ -1,22 +1,22 @@
 /**
- * Copyright 2002 DFKI GmbH.
- * All Rights Reserved.  Use is subject to license terms.
- *
- * This file is part of MARY TTS.
- *
- * MARY TTS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, version 3 of the License.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
+* Copyright 2002 DFKI GmbH.
+* All Rights Reserved. Use is subject to license terms.
+*
+* This file is part of MARY TTS.
+*
+* MARY TTS is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, version 3 of the License.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>.
+*
+*/
 
 package marytts.language.ko.preprocess;
 
@@ -35,10 +35,10 @@ import org.w3c.dom.Element;
 
 
 /**
- * An expansion pattern implementation for currency patterns.
- *
- * @author Marc Schr&ouml;der
- */
+* An expansion pattern implementation for currency patterns.
+*
+* @author Marc Schr&ouml;der
+*/
 
 public class CurrencyEP extends ExpansionPattern
 {
@@ -46,14 +46,14 @@ public class CurrencyEP extends ExpansionPattern
         "currency"
     };
     /**
-     * Every subclass has its own list knownTypes, 
-     * an internal string representation of known types.
-     * These are possible values of the <code>type</code> attribute to the
-     * <code>say-as</code> element, as defined in MaryXML.dtd.
-     * If there is more than one known type, the first type
-     * (<code>knownTypes[0]</code>) is expected to be the most general one,
-     * of which the others are specialisations.
-     */
+* Every subclass has its own list knownTypes,
+* an internal string representation of known types.
+* These are possible values of the <code>type</code> attribute to the
+* <code>say-as</code> element, as defined in MaryXML.dtd.
+* If there is more than one known type, the first type
+* (<code>knownTypes[0]</code>) is expected to be the most general one,
+* of which the others are specialisations.
+*/
     private final List<String> knownTypes = Arrays.asList(_knownTypes);
     public List<String> knownTypes() { return knownTypes; }
 
@@ -275,11 +275,11 @@ public class CurrencyEP extends ExpansionPattern
     public Pattern reMatchingChars() { return reMatchingChars; }
 
     /**
-     * Every subclass has its own logger.
-     * The important point is that if several threads are accessing
-     * the variable at the same time, the logger needs to be thread-safe
-     * or it will produce rubbish.
-     */
+* Every subclass has its own logger.
+* The important point is that if several threads are accessing
+* the variable at the same time, the logger needs to be thread-safe
+* or it will produce rubbish.
+*/
     //private Logger logger = MaryUtils.getLogger("CurrencyEP");
 
 
@@ -328,9 +328,9 @@ public class CurrencyEP extends ExpansionPattern
 
     protected List<Element> expand(List<Element> tokens, String s, int type)
     {
-        if (tokens == null) 
+        if (tokens == null)
             throw new NullPointerException("Received null argument");
-        if (tokens.isEmpty()) 
+        if (tokens.isEmpty())
             throw new IllegalArgumentException("Received empty list");
         Document doc = ((Element)tokens.get(0)).getOwnerDocument();
         // we expect type to be one of the return values of match():
@@ -352,7 +352,7 @@ public class CurrencyEP extends ExpansionPattern
     protected List<Element> expandCurrency(Document doc, String s)
     {
         ArrayList<Element> exp = new ArrayList<Element>();
-	StringBuilder sb = new StringBuilder();
+StringBuilder sb = new StringBuilder();
         String currency = null;
         String amount = null;
         Matcher reMatcher = reCurrencyLeading.matcher(s);
@@ -387,3 +387,4 @@ public class CurrencyEP extends ExpansionPattern
 
 
 }
+

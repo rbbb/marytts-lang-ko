@@ -135,14 +135,14 @@ public class KoreanNumbersToWords {
 	//of consecutive numbers and punctuation found in the text
 	//counter is the counting word or null
 	
-	public static List<String> toWords(String numbersAndPunctuation, String counter)
+	public static List<String> toWords(String number, String counter)
 	{
 		for(CounterWord counterWord:CounterWord.values())
 		{
 			if(counterWord.getHangul().equals(counter))
 			{
 				//exception: first time
-				if(numbersAndPunctuation.trim().equals("1") && (counter.equals("번째") || counter.equals("째")))
+				if(removePunctuation(number).trim().equals("1") && (counter.equals("번째") || counter.equals("째")))
 				{
 					List<String> result = new ArrayList<String>();
 					result.add("첫");
@@ -155,16 +155,22 @@ public class KoreanNumbersToWords {
 				switch(counterWord.countingType)
 				{
 				case NativeKorean: 
-					long number = removePunctuationAndCastToLong(numbersAndPunctuation);
-					if(number<1 || number >99)
+					if(number.length()>3)
 					{
-						result = toSinoKoreanNumber(number);
+						result = toNativeKoreanNumber(number, counterWord.nativeIsAttributive());
 					}else{
-						result = toNativeKoreanNumber((int)number, counterWord.nativeIsAttributive());	
+						int numberInt = Integer.parseInt(number);
+						if(numberInt<1 || numberInt>99)
+						{
+							result = toSinoKoreanNumber(number, true);
+						}else{
+							result = toNativeKoreanNumber(number, counterWord.nativeIsAttributive());		
+						}
 					}
+					
 					break;
 				case SinoKorean: 
-					result = toSinoKoreanNumber(removePunctuationAndCastToLong(numbersAndPunctuation));
+					result = toSinoKoreanNumber(number, true);
 					break;
 				default:throw new IllegalArgumentException("Impossible case, only two ways to count in Korean");
 				}
@@ -173,39 +179,53 @@ public class KoreanNumbersToWords {
 			}
 		}
 		
-		return toSinoKoreanNumber(removePunctuationAndCastToLong(numbersAndPunctuation));
+		return toSinoKoreanNumber(number, false);
 	}
-	private static long removePunctuationAndCastToLong(String s)
+	private static String removePunctuation(String s)
 	{
-		long multiplier = s.startsWith("-")?-1:1;
-		long number = 0;
+		boolean minusSeen = false;
+		boolean numberSeen = false;
+		String number = "";
 		for(int i=0;i<s.length();i++)
 		{
 			switch(s.charAt(i))
 			{
-			case '0': number = number*10+0; break;
-			case '1': number = number*10+1; break;
-			case '2': number = number*10+2; break;
-			case '3': number = number*10+3; break;
-			case '4': number = number*10+4; break;
-			case '5': number = number*10+5; break;
-			case '6': number = number*10+6; break;
-			case '7': number = number*10+7; break;
-			case '8': number = number*10+8; break;
-			case '9': number = number*10+9; break;
+			case '-':
+				if(!minusSeen && !numberSeen)
+				{
+					number += '-';
+				}
+				minusSeen = true; 
+				break;
+			case '0': number += '0'; numberSeen = true; break;
+			case '1': number += '1'; numberSeen = true; break;
+			case '2': number += '2'; numberSeen = true; break;
+			case '3': number += '3'; numberSeen = true; break;
+			case '4': number += '4'; numberSeen = true; break;
+			case '5': number += '5'; numberSeen = true; break;
+			case '6': number += '6'; numberSeen = true; break;
+			case '7': number += '7'; numberSeen = true; break;
+			case '8': number += '8'; numberSeen = true; break;
+			case '9': number += '9'; numberSeen = true; break;
 			}
 		}
-		return number * multiplier;
+		return number;
 	}
 	
 	public static List<String> toNativeKoreanNumber(String numberString, boolean attributive)
 	{
-		long number = removePunctuationAndCastToLong(numberString);
+		numberString = removePunctuation(numberString);
+		
+		if(numberString.length()>3)
+		{
+			throw new IllegalArgumentException("Native Korean numbers usually only represent numbers 0-99");
+		}
+		int number = Integer.parseInt(numberString);
 		if(number<1 || number>99)
 		{
 			throw new IllegalArgumentException("Native Korean numbers usually only represent numbers 0-99");
 		}
-		return toNativeKoreanNumber((int)number, attributive);
+		return toNativeKoreanNumber(number, attributive);
 	}
 	public static List<String> toNativeKoreanNumber(int number, boolean attributive)
 	{
@@ -290,22 +310,26 @@ public class KoreanNumbersToWords {
 		return result;
 	}
 
+	public static List<String> toSinoKoreanNumber(char number)
+	{
+		return toSinoKoreanNumber(number+"");
+	}
 	public static List<String> toSinoKoreanNumber(String numberString)
 	{
-		return toSinoKoreanNumber(Long.parseLong(numberString));
+		return toSinoKoreanNumber(numberString, false);
 	}
-	public static List<String> toSinoKoreanNumber(long number)
+	public static List<String> toSinoKoreanNumber(String numberString, boolean hasCounter)
 	{
-		String numberString = ""+number;
+		numberString = removePunctuation(numberString);
 		
 		List<String> result = new ArrayList<String>();
-		if(number==0)
+		if(numberString.equals("0"))
 		{
 			result.add("영");
 			return result;
 		}
 		
-		if(number<0L)
+		if(numberString.startsWith("-"))
 		{
 			result.add("마이너스");// 'minus'
 			numberString = numberString.substring(1);
@@ -332,7 +356,7 @@ public class KoreanNumbersToWords {
 			case '7': result.add("칠"); break;
 			case '8': result.add("팔"); break;
 			case '9': result.add("구"); break;
-			default: throw new IllegalArgumentException("Entry condition into the function not respected, "+number);
+			default: throw new IllegalArgumentException("Entry condition into the function not respected, "+numberString);
 			}
 			if(currentDigitChar!='0')
 			{
@@ -342,7 +366,7 @@ public class KoreanNumbersToWords {
 				case 1: result.add("십"); break;//10s
 				case 2: result.add("백"); break;//100s
 				case 3: result.add("천"); break;//1000s
-				default: throw new IllegalArgumentException("Loop invariant not respected, "+orderInMyriad+" "+number);
+				default: throw new IllegalArgumentException("Loop invariant not respected, "+orderInMyriad+" "+numberString);
 				}
 			}
 			if(orderInMyriad==0)
@@ -369,19 +393,24 @@ public class KoreanNumbersToWords {
 					case 15: result.add("나유타"); break; //10^60 那由他
 					case 16: result.add("불가사의"); break; //10^64 不可思議
 					case 17: result.add("무량대수"); break; //10^68 無量大數
-					default: throw new IllegalArgumentException("Loop invariant not respected, "+orderInMyriad+" "+number);
+					default:
+						if(hasCounter){
+							result.add("못센");
+						}else{
+							result.add("못세게");
+						}
 					}
 				}
 				currentMyriadHasDigit = false;
 			}
-			orderOfMyriad += orderInMyriad==3?1:0;
-			orderInMyriad = (orderInMyriad+1) % 4;
 		}
 
 		return result;
 	}
 	public static List<String> toSpokenFloat(String numberString)
 	{
+		numberString = removePunctuation(numberString);
+		
 		String integerPart = "";
 		boolean inIntegerPart = true;
 		List<String> result = null;
@@ -449,6 +478,8 @@ public class KoreanNumbersToWords {
 
 	public static List<String> toSpelledOutNumber(String numberString)
 	{
+		numberString = removePunctuation(numberString);
+		
 		List<String> result = new ArrayList<String>();
 
 		boolean currentHanaTu = false;
@@ -493,7 +524,9 @@ public class KoreanNumbersToWords {
 			case '7': result.add("칠"); break;
 			case '8': result.add("팔"); break;
 			case '9': result.add("구"); break;
-			default: throw new IllegalArgumentException("Long to string should not yield characters outside of range 0-9: '"+numberString+"'");
+			case '.':
+			case '-': break;
+			default: throw new IllegalArgumentException("punctuation should have been removed from '"+numberString+"'");
 			}
 		}
 		return result;

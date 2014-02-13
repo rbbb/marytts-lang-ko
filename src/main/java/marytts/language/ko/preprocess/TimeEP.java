@@ -1,4 +1,6 @@
+
 /**
+
  * Copyright 2002 DFKI GmbH.
  * All Rights Reserved.  Use is subject to license terms.
  *
@@ -67,7 +69,7 @@ public class TimeEP extends ExpansionPattern
     protected final String sMinute = "(?:[0-5][0-9])";
     protected final String sSecond = sMinute;
     protected final String sSep = "(?:\\:|\\.)";
-    protected final String sFinal = "(?:h)";//native hour abbreviation is handled by the counting word pattern for si
+    protected final String sFinal = "(?:h?)";//native hour abbreviation is handled by the counting word pattern for si
     protected final String sMatchingChars = "[0-9:\\.]";
     protected final String timeOfDay = "a|A|am|AM|Am|aM|p|P|pm|PM|Pm|pM";
 
@@ -209,21 +211,26 @@ public class TimeEP extends ExpansionPattern
             return null;
         }
         String hour = reMatcher.group(1); // first bracket pair in reHour: hour
-		sb.append(KoreanNumbersToWords.toNativeKoreanNumber(hour, true) +" 시");
+        if(hour.equals("00")||hour.equals("0"))
+        {
+        	sb.append("밤열두시");
+        }else{
+        	sb.append(listToString(KoreanNumbersToWords.toNativeKoreanNumber(hour, true) )+" 시");
+        }
         
 		String minute = reMatcher.group(2);
-        sb.append(" Uhr");
         if (!minute.equals("00")) {
             sb.append(" ");
-            sb.append(KoreanNumbersToWords.toSinoKoreanNumber(minute) +" 분");
+            sb.append(listToString(KoreanNumbersToWords.toSinoKoreanNumber(minute))+" 분" );
         }
+
         // Create one mtu from hour and minute:
         // !!!! (the original text for the mtu is actually not s)
         exp.addAll(makeNewTokens(doc, sb.toString(), true, s));
         String second = reMatcher.group(3);
         if (!second.equals("00")) {
         	sb.append(" ");
-            sb.append(KoreanNumbersToWords.toSinoKoreanNumber(minute) +" 초");
+            sb.append(listToString(KoreanNumbersToWords.toSinoKoreanNumber(minute ))+" 초");
         }
         return exp;
     }
@@ -235,13 +242,18 @@ public class TimeEP extends ExpansionPattern
         Matcher reMatcher = reHourMinute.matcher(s);
         reMatcher.find();
         String hour = reMatcher.group(1);
-        sb.append(KoreanNumbersToWords.toNativeKoreanNumber(hour, true) +" 시");
+        
+        if(hour.equals("00")||hour.equals("0"))
+        {
+        	sb.append("밤열두시");
+        }else{
+        	sb.append(listToString(KoreanNumbersToWords.toNativeKoreanNumber(hour, true) )+" 시");
+        }
         
 		String minute = reMatcher.group(2);
-        sb.append(" Uhr");
         if (!minute.equals("00")) {
             sb.append(" ");
-            sb.append(KoreanNumbersToWords.toSinoKoreanNumber(minute) +" 분");
+            sb.append(listToString(KoreanNumbersToWords.toSinoKoreanNumber(minute))+" 분" );
         }
         // Create one mtu from hour and minute:
         exp.addAll(makeNewTokens(doc, sb.toString(), true, s));
@@ -254,7 +266,12 @@ public class TimeEP extends ExpansionPattern
         Matcher reMatcher = reHour.matcher(s);
         reMatcher.find();
         String hour = reMatcher.group(1); // first bracket pair in reHour: hour
-        exp.addAll(makeNewTokens(doc, KoreanNumbersToWords.toNativeKoreanNumber(hour, true) +" 시", true, s));
+        if(hour.equals("00")||hour.equals("0"))
+        {
+        	exp.addAll(makeNewTokens(doc, "밤열두시", true, s));
+        }else{
+        	exp.addAll(makeNewTokens(doc, listToString(KoreanNumbersToWords.toNativeKoreanNumber(hour, true))+" 시", true, s));
+        }
         
         return exp;
     }
@@ -274,8 +291,8 @@ public class TimeEP extends ExpansionPattern
     	boolean isAfternoon = isAfternoon(s); 
 		s = extractDigits(s);
 		if (s.length() == 0)
-			return null; // alternatively it could return "Null Uhr"
-						 // (that means: "midnight");
+			return null; 
+		
 		// add an initial "0" if hours are represented in one digit
 		if (s.length() % 2 == 1)
     		s = "0" + s;
@@ -310,7 +327,6 @@ public class TimeEP extends ExpansionPattern
 				s = s.substring(0,i) + ":" + s.substring(i);
 		}
 		// append sFinal, otherwise no matching
-		s += "h";
 		switch (s.length()){
 		case 3:
 			// just hours:
@@ -353,7 +369,6 @@ public class TimeEP extends ExpansionPattern
     	return (new Integer(iHour)).toString();
     }
     
-    
     private String extractDigits(String s){
     	StringBuilder sB = new StringBuilder(s);
     	for (int i=0; i<sB.length(); i++)
@@ -362,7 +377,6 @@ public class TimeEP extends ExpansionPattern
     	return sB.toString();
     }
 
-    
     private boolean containsOneOrMoreDigits(String s){
     	for (int i=0; i<s.length(); i++){
     		if ('0' <= s.charAt(i) && s.charAt(i) <= '9') return true;

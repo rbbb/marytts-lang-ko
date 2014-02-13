@@ -254,7 +254,7 @@ public class DateEP extends ExpansionPattern
 
 	protected boolean matchDateYMD(String s)
 	{
-		return reYearMonthDay.matcher(s).matches() ;
+		return reYearMonthDay.matcher(s).matches() || reDOWYearMonthDay.matcher(s).matches() || reYearMonthDayDOW.matcher(s).matches();
 	}
 
 	protected boolean matchDateDM(String s)
@@ -334,9 +334,9 @@ public class DateEP extends ExpansionPattern
 		String day=null, month=null, year=null, dow=null;
 		switch(dayOfWeekType)
 		{
-		case 1: dow = reMatcher.group(1); year = reMatcher.group(2); month = reMatcher.group(3); day = reMatcher.group(4); break;
-		case 2: year = reMatcher.group(1); month = reMatcher.group(2); day = reMatcher.group(3); dow = reMatcher.group(4); break;
-		case 3: year = reMatcher.group(1); month = reMatcher.group(2); day = reMatcher.group(3); dow = null; break;
+		case 1: dow = reMatcher.group(1); year = reMatcher.group(2); month = reMatcher.group(4); day = reMatcher.group(5); break;
+		case 2: year = reMatcher.group(1); month = reMatcher.group(3); day = reMatcher.group(4); dow = reMatcher.group(5); break;
+		case 3: year = reMatcher.group(1); month = reMatcher.group(3); day = reMatcher.group(4); dow = null; break;
 		}
 
 		if (dayOfWeekType == 1) {
