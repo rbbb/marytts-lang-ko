@@ -11,7 +11,7 @@
 * - have the robot say ‘우야, 웃기지마라 촘’ ‘엄마, 큰언 구박해’ and ‘죽울래!?’ (respectively, 
 *   ‘Jay, stop kidding’, ‘Mooom, big sis is complaining agaain’ and ‘R’you crazy?’)
 * 
-* - take a video and send it to ‘seunghee DOT han ATSIGN gmail ANOTHERDOT com’
+* - take a video and send it to ‘hansteffi ATSIGN gmail ANOTHERDOT com’
 *
 * Released on Seunghee’s birthday, because she likes robots.
 * Copyright 2014 Seunghee Han
